@@ -1,0 +1,32 @@
+clear all; close all;
+
+%Set up some variables for writing datarefs
+
+VEHX_ID_str = [uint8('VEHX') 0x00];
+DREF_ID_str = [uint8('DREF') 0x00];
+DATA_ID_str = [uint8('DATA') 0x00];
+
+
+
+u = udp('127.0.0.1',49000);
+fopen(u);
+
+DREF_str = uint8('sim/operation/override/override_ias');
+DREF_str(end+2:500) = 0x20; %packet must be padded with ascii space character (not null)
+fwrite(u,[DREF_ID_str typecast(single(1),'uint8') DREF_str]);
+
+DREF_str = uint8('sim/cockpit2/gauges/indicators/calibrated_airspeed_kts_pilot');
+DREF_str(end+2:500) = 0x20;
+fwrite(u,[DREF_ID_str typecast(single(100),'uint8') DREF_str]);
+
+DREF_str = uint8('sim/cockpit2/gauges/indicators/airspeed_kts_pilot');
+DREF_str(end+2:500) = 0x20;
+fwrite(u,[DREF_ID_str typecast(single(100),'uint8') DREF_str]);
+
+%Write to the airspeeds in the 
+IAS = 100;
+fwrite(u,[DATA_ID_str typecast(int32(3),'uint8') ...
+    typecast(single(IAS),'uint8') typecast(single(IAS),'uint8') typecast(single(IAS),'uint8') typecast(single(IAS),'uint8') ...
+    typecast(single(IAS),'uint8') typecast(single(IAS),'uint8') typecast(single(IAS),'uint8') typecast(single(IAS),'uint8')]);
+
+fclose(u);
