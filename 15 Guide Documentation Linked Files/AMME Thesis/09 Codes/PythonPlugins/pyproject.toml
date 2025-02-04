@@ -1,0 +1,14 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "SimComplex"
+version = "1.0.0"
+
+dependencies = [
+    "numpy",
+    "numpy-quaternion",
+    "scipy",
+    "numba"
+]
